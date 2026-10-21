@@ -1,0 +1,26 @@
+<idea-plugin>
+    <id>org.sculptor.bazinga</id>
+    <name>Sculptor DSL</name>
+    <vendor url="https://github.com/Husterknupp/sculptor-intellij-bazinga">Husterknupp</vendor>
+
+    <description><![CDATA[
+        IDE support for the Sculptor DSL (.btdesign files).
+        <br>
+        Currently provides syntax highlighting for .btdesign files, as
+        the first step towards full language server support via LSP4IJ.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType
+            name="Sculptor DSL"
+            implementationClass="org.sculptor.intellij.lang.BtdesignFileType"
+            fieldName="INSTANCE"
+            language="Sculptor"
+            extensions="btdesign"/>
+        <lang.syntaxHighlighterFactory
+            language="Sculptor"
+            implementationClass="org.sculptor.intellij.lang.BtdesignSyntaxHighlighterFactory"/>
+    </extensions>
+</idea-plugin>
