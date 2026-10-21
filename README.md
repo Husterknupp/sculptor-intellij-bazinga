@@ -24,5 +24,10 @@ Runs the lexer unit tests and produces an installable plugin zip under
 ./gradlew runIde
 ```
 
-Launches a sandboxed IntelliJ IDEA instance with the plugin installed; open
-a `.btdesign` file to see the highlighting.
+`runIde` is provided by the Gradle IntelliJ Plugin itself (see
+`build.gradle.kts`'s `plugins {}` block) — there's no explicit `runIde { }`
+task definition in this project to look for. It launches a sandboxed
+IntelliJ IDEA Community instance with this plugin installed; first run
+downloads the target IDE version and can take a few minutes. Once it's up,
+open `samples/shop.btdesign` (via File > Open, or drag it into the window)
+to see `Entity`, `Module` and `Application` highlighted as keywords.
