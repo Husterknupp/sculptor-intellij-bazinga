@@ -25,6 +25,7 @@ replay_pid*
 
 # Gradle / IntelliJ Platform Gradle Plugin
 .gradle/
+.intellijPlatform/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 
