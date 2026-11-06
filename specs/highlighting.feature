@@ -10,7 +10,10 @@ Feature: Sculptor DSL syntax highlighting in IntelliJ (MVP)
   is not needed for this feature. Starting the server in LSP4IJ is
   part of the next milestone (see cross-file-navigation.feature).
 
-  These scenarios are checked by a human in IntelliJ.
+  These scenarios are checked by a human in IntelliJ. Whether the
+  class colors differ from plain text depends on the color scheme; put
+  the caret on a word and run "Jump to Colors and Fonts" to see which
+  color it was assigned.
 
   Background:
     Given the plugin is installed in IntelliJ
@@ -33,4 +36,11 @@ Feature: Sculptor DSL syntax highlighting in IntelliJ (MVP)
   Scenario: Keywords are highlighted in IntelliJ
     When I open "shop.btdesign" in IntelliJ
     Then "Entity", "Module" and "Application" are colored as keywords
-    And "Customer" and "Order" are not
+    And "Customer" and "Order" are not colored as keywords
+
+  @manual
+  Scenario: Domain object names and references are highlighted as classes
+    When I open "shop.btdesign" in IntelliJ
+    Then "Customer" in "Entity Customer" is colored as a class name
+    And "Order" in "- @Order lastOrder" is colored as a class reference
+    And "name" and "lastOrder" are not
