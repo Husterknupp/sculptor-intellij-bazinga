@@ -10,6 +10,13 @@ Feature: Sculptor DSL syntax highlighting in IntelliJ (MVP)
   is not needed for this feature. Starting the server in LSP4IJ is
   part of the next milestone (see cross-file-navigation.feature).
 
+  Coloring is syntactic: a name is colored by its position in the
+  text ("Entity <Name>" declares a class, "@<Name>" references one),
+  not by resolving it. A reference looks the same whether the entity
+  is declared in the same file or imported from another one, and
+  whether it resolves at all. Reporting an unresolved reference is a
+  diagnostic and belongs to cross-file-navigation.feature.
+
   These scenarios are checked by a human in IntelliJ. Whether the
   class colors differ from plain text depends on the color scheme; put
   the caret on a word and run "Jump to Colors and Fonts" to see which
@@ -19,14 +26,15 @@ Feature: Sculptor DSL syntax highlighting in IntelliJ (MVP)
     Given the plugin is installed in IntelliJ
     And a workspace containing "shop.btdesign":
       """
-      import "classpath:/ordering.btdesign"
-
       Application Shop {
         basePackage=org.example.shop
         Module customer {
           Entity Customer {
             String name
             - @Order lastOrder
+          }
+          Entity Order {
+            String orderNumber
           }
         }
       }
@@ -42,5 +50,6 @@ Feature: Sculptor DSL syntax highlighting in IntelliJ (MVP)
   Scenario: Domain object names and references are highlighted as classes
     When I open "shop.btdesign" in IntelliJ
     Then "Customer" in "Entity Customer" is colored as a class name
+    And "Order" in "Entity Order" is colored as a class name
     And "Order" in "- @Order lastOrder" is colored as a class reference
-    And "name" and "lastOrder" are not
+    And "name", "lastOrder" and "orderNumber" are not
