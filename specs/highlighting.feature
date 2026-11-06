@@ -1,23 +1,19 @@
 @mvp
 Feature: Sculptor DSL syntax highlighting in IntelliJ (MVP)
 
-  A developer opens a Sculptor model split across several .btdesign
-  files in IntelliJ, with the language server from Sculptor `develop`
-  registered in LSP4IJ as a user-defined language server:
-  https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserDefinedLanguageServer.md
+  A developer opens a .btdesign file in IntelliJ and can read it
+  efficiently because Sculptor keywords are colored.
 
-  The server advertises `semanticTokensProvider` but currently returns
-  zero tokens, so keyword highlighting has to come from a client-side
-  source (TextMate grammar or a custom highlighting annotator), not
-  from the language server itself. Starting the server is still
-  required so the next milestone (see cross-file-navigation.feature)
-  has something to talk to; its status is visible in LSP4IJ's "LSP
-  Consoles" view: https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserGuide.md
+  Highlighting is client-side, provided by this plugin. The language
+  server from Sculptor `develop` advertises `semanticTokensProvider`
+  but currently returns zero tokens, so it cannot color anything and
+  is not needed for this feature. Starting the server in LSP4IJ is
+  part of the next milestone (see cross-file-navigation.feature).
 
   These scenarios are checked by a human in IntelliJ.
 
   Background:
-    Given the language server built from Sculptor "develop" at commit "4d390ca"
+    Given the plugin is installed in IntelliJ
     And a workspace containing "shop.btdesign":
       """
       import "classpath:/ordering.btdesign"
@@ -32,22 +28,6 @@ Feature: Sculptor DSL syntax highlighting in IntelliJ (MVP)
         }
       }
       """
-    And a workspace containing "ordering.btdesign":
-      """
-      ApplicationPart OrderPart {
-        Module ordering {
-          Entity Order {
-            String orderNumber
-          }
-        }
-      }
-      """
-
-  @manual
-  Scenario: The server is active for .btdesign files in IntelliJ
-    Given the server is registered in LSP4IJ as a user-defined language server for "*.btdesign"
-    When I open "shop.btdesign" in IntelliJ
-    Then the LSP4IJ console shows the server as started
 
   @manual
   Scenario: Keywords are highlighted in IntelliJ

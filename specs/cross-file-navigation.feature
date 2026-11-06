@@ -8,17 +8,23 @@ Feature: Sculptor cross-file model support in IntelliJ
   Next milestone after syntax highlighting (see highlighting.feature).
   Blocked today: `import "classpath:/..."` is not resolved by the
   server ("Imported resource could not be found"), also in a Maven
-  layout under src/main/resources, so 3 of these 4 scenarios currently
+  layout under src/main/resources, so 3 of the 4 @server scenarios currently
   fail against the real server. A relative `import "ordering.btdesign"`
   already works, including cross-file definition, completion and
   rename. Real Sculptor projects (e.g. DDDSample) use `classpath:`
   imports, so this needs a fix or workaround before these scenarios
   can be claimed as done.
 
-  @server scenarios run in CI against the real language server over
-  stdio: no IntelliJ involved, just plain LSP requests/notifications
+  Scenarios tagged @server run in CI against the real language server
+  over stdio: no IntelliJ involved, just plain LSP requests/notifications
   (initialize, textDocument/didOpen, textDocument/definition, ...)
   sent directly to the server process.
+
+  The @manual scenario is checked by a human in IntelliJ, with the
+  server registered as a user-defined language server:
+  https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserDefinedLanguageServer.md
+  Its status is visible in LSP4IJ's "LSP Consoles" view:
+  https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserGuide.md
 
   Out of scope for now, each gets its own feature file later:
   hover documentation, find usages, rename, formatting, quick fixes.
@@ -49,6 +55,12 @@ Feature: Sculptor cross-file model support in IntelliJ
         }
       }
       """
+
+  @manual
+  Scenario: The server is active for .btdesign files in IntelliJ
+    Given the server is registered in LSP4IJ as a user-defined language server for "*.btdesign"
+    When I open "shop.btdesign" in IntelliJ
+    Then the LSP4IJ console shows the server as started
 
   @server
   Scenario: A valid multi-file model has no errors
