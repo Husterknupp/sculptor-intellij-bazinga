@@ -23,8 +23,9 @@ Feature: Sculptor cross-file model support in IntelliJ
   The @manual scenario is checked by a human in IntelliJ, with the
   server registered as a user-defined language server:
   https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserDefinedLanguageServer.md
-  Its status is visible in LSP4IJ's "LSP Consoles" view:
-  https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserGuide.md
+  Its status is visible in LSP4IJ's Language Servers view (the "LSP
+  console", see the comment on that scenario):
+  https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserGuide.md#lsp-console
 
   Out of scope for now, each gets its own feature file later:
   hover documentation, find usages, rename, formatting, quick fixes.
@@ -56,6 +57,15 @@ Feature: Sculptor cross-file model support in IntelliJ
       }
       """
 
+  # How to check "started": open LSP4IJ's Language Servers view (the "LSP
+  # console") inside IntelliJ. It lists every registered server with its
+  # state; a server that has been started for the open file shows as started.
+  # Anything the server reports via window/logMessage appears on that
+  # server's `Logs` tab, and the right-click menu offers stop and restart.
+  # Per-server tracing is configured under Settings | Languages & Frameworks
+  # | Language Servers. LSP4IJ's docs do not describe a separate log file for
+  # this, so the view above is the place to look.
+  # https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserGuide.md#lsp-console
   @manual
   Scenario: The server is active for .btdesign files in IntelliJ
     Given the server is registered in LSP4IJ as a user-defined language server for "*.btdesign"
