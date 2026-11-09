@@ -1,27 +1,31 @@
 @mvp
 Feature: Sculptor DSL syntax highlighting in IntelliJ (MVP)
 
-  A developer opens a Sculptor model split across several .btdesign
-  files in IntelliJ, with the language server from Sculptor `develop`
-  registered in LSP4IJ as a user-defined language server:
-  https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserDefinedLanguageServer.md
+  A developer opens a .btdesign file in IntelliJ and can read it
+  efficiently because Sculptor keywords are colored.
 
-  The server advertises `semanticTokensProvider` but currently returns
-  zero tokens, so keyword highlighting has to come from a client-side
-  source (TextMate grammar or a custom highlighting annotator), not
-  from the language server itself. Starting the server is still
-  required so the next milestone (see cross-file-navigation.feature)
-  has something to talk to; its status is visible in LSP4IJ's "LSP
-  Consoles" view: https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserGuide.md
+  Highlighting is client-side, provided by this plugin. The language
+  server from Sculptor `develop` advertises `semanticTokensProvider`
+  but currently returns zero tokens, so it cannot color anything and
+  is not needed for this feature. Starting the server in LSP4IJ is
+  part of the next milestone (see cross-file-navigation.feature).
 
-  These scenarios are checked by a human in IntelliJ.
+  Coloring is syntactic: a name is colored by its position in the
+  text ("Entity <Name>" declares a class, "@<Name>" references one),
+  not by resolving it. A reference looks the same whether the entity
+  is declared in the same file or imported from another one, and
+  whether it resolves at all. Reporting an unresolved reference is a
+  diagnostic and belongs to cross-file-navigation.feature.
+
+  These scenarios are checked by a human in IntelliJ. Whether the
+  class colors differ from plain text depends on the color scheme; put
+  the caret on a word and run "Jump to Colors and Fonts" to see which
+  color it was assigned.
 
   Background:
-    Given the language server built from Sculptor "develop" at commit "4d390ca"
+    Given the plugin is installed in IntelliJ
     And a workspace containing "shop.btdesign":
       """
-      import "classpath:/ordering.btdesign"
-
       Application Shop {
         basePackage=org.example.shop
         Module customer {
@@ -29,13 +33,6 @@ Feature: Sculptor DSL syntax highlighting in IntelliJ (MVP)
             String name
             - @Order lastOrder
           }
-        }
-      }
-      """
-    And a workspace containing "ordering.btdesign":
-      """
-      ApplicationPart OrderPart {
-        Module ordering {
           Entity Order {
             String orderNumber
           }
@@ -44,13 +41,15 @@ Feature: Sculptor DSL syntax highlighting in IntelliJ (MVP)
       """
 
   @manual
-  Scenario: The server is active for .btdesign files in IntelliJ
-    Given the server is registered in LSP4IJ as a user-defined language server for "*.btdesign"
-    When I open "shop.btdesign" in IntelliJ
-    Then the LSP4IJ console shows the server as started
-
-  @manual
   Scenario: Keywords are highlighted in IntelliJ
     When I open "shop.btdesign" in IntelliJ
     Then "Entity", "Module" and "Application" are colored as keywords
-    And "Customer" and "Order" are not
+    And "Customer" and "Order" are not colored as keywords
+
+  @manual
+  Scenario: Domain object names and references are highlighted as classes
+    When I open "shop.btdesign" in IntelliJ
+    Then "Customer" in "Entity Customer" is colored as a class name
+    And "Order" in "Entity Order" is colored as a class name
+    And "Order" in "- @Order lastOrder" is colored as a class reference
+    And "name", "lastOrder" and "orderNumber" are not
