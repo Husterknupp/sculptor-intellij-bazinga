@@ -5,6 +5,8 @@ import com.intellij.psi.tree.IElementType
 object BtdesignTokenTypes {
     val KEYWORD = IElementType("SCULPTOR_KEYWORD", BtdesignLanguage)
     val IDENTIFIER = IElementType("SCULPTOR_IDENTIFIER", BtdesignLanguage)
+    val CLASS_NAME = IElementType("SCULPTOR_CLASS_NAME", BtdesignLanguage)
+    val CLASS_REFERENCE = IElementType("SCULPTOR_CLASS_REFERENCE", BtdesignLanguage)
     val STRING = IElementType("SCULPTOR_STRING", BtdesignLanguage)
     val NUMBER = IElementType("SCULPTOR_NUMBER", BtdesignLanguage)
     val COMMENT = IElementType("SCULPTOR_COMMENT", BtdesignLanguage)
@@ -27,5 +29,15 @@ object BtdesignTokenTypes {
         "key", "nullable", "changeable", "inverse", "cascade", "length",
         "databaseColumn", "fetch", "hint", "optimisticLocking", "auditable",
         "throws", "protected", "public", "private", "static", "final",
+    )
+
+    /**
+     * Keywords after which the next word on the same line names a class, as
+     * in "Entity Customer". Application, ApplicationPart and Module are left
+     * out on purpose: their names are not classes.
+     */
+    val CLASS_DECLARATION_KEYWORDS: Set<String> = setOf(
+        "Entity", "ValueObject", "BasicType", "Enum", "DomainEvent",
+        "Service", "Repository", "Resource", "Exception",
     )
 }

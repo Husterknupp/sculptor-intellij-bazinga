@@ -45,6 +45,24 @@ class BtdesignLexer : LexerBase() {
 
     override fun getBufferEnd(): Int = bufferEnd
 
+    /**
+     * Class coloring is syntactic and looks backwards in the buffer instead
+     * of keeping state, because the editor may restart the lexer in the
+     * middle of a line (getState() is always 0). Only the same line counts,
+     * so a keyword in a comment on the line above cannot color a name.
+     */
+    private fun isClassReference(identifierStart: Int): Boolean =
+        identifierStart > 0 && buffer[identifierStart - 1] == '@'
+
+    private fun isClassName(identifierStart: Int): Boolean {
+        var end = identifierStart
+        while (end > 0 && (buffer[end - 1] == ' ' || buffer[end - 1] == '\t')) end--
+        if (end == identifierStart) return false
+        var start = end
+        while (start > 0 && (buffer[start - 1].isLetterOrDigit() || buffer[start - 1] == '_')) start--
+        return buffer.subSequence(start, end).toString() in BtdesignTokenTypes.CLASS_DECLARATION_KEYWORDS
+    }
+
     private fun scanNextToken() {
         tokenStart = position
         if (position >= bufferEnd) {
@@ -81,7 +99,12 @@ class BtdesignLexer : LexerBase() {
                     position++
                 }
                 val text = buffer.subSequence(tokenStart, position).toString()
-                if (text in BtdesignTokenTypes.KEYWORDS) BtdesignTokenTypes.KEYWORD else BtdesignTokenTypes.IDENTIFIER
+                when {
+                    text in BtdesignTokenTypes.KEYWORDS -> BtdesignTokenTypes.KEYWORD
+                    isClassReference(tokenStart) -> BtdesignTokenTypes.CLASS_REFERENCE
+                    isClassName(tokenStart) -> BtdesignTokenTypes.CLASS_NAME
+                    else -> BtdesignTokenTypes.IDENTIFIER
+                }
             }
             else -> {
                 position++

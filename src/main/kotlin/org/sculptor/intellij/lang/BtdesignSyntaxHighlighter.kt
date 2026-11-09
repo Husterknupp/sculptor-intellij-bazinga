@@ -12,6 +12,10 @@ class BtdesignSyntaxHighlighter : SyntaxHighlighterBase() {
     companion object {
         val KEYWORD: TextAttributesKey =
             createTextAttributesKey("SCULPTOR_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
+        val CLASS_NAME: TextAttributesKey =
+            createTextAttributesKey("SCULPTOR_CLASS_NAME", DefaultLanguageHighlighterColors.CLASS_NAME)
+        val CLASS_REFERENCE: TextAttributesKey =
+            createTextAttributesKey("SCULPTOR_CLASS_REFERENCE", DefaultLanguageHighlighterColors.CLASS_REFERENCE)
         val STRING: TextAttributesKey =
             createTextAttributesKey("SCULPTOR_STRING", DefaultLanguageHighlighterColors.STRING)
         val NUMBER: TextAttributesKey =
@@ -20,6 +24,8 @@ class BtdesignSyntaxHighlighter : SyntaxHighlighterBase() {
             createTextAttributesKey("SCULPTOR_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
 
         private val KEYWORD_KEYS = arrayOf(KEYWORD)
+        private val CLASS_NAME_KEYS = arrayOf(CLASS_NAME)
+        private val CLASS_REFERENCE_KEYS = arrayOf(CLASS_REFERENCE)
         private val STRING_KEYS = arrayOf(STRING)
         private val NUMBER_KEYS = arrayOf(NUMBER)
         private val COMMENT_KEYS = arrayOf(COMMENT)
@@ -30,6 +36,8 @@ class BtdesignSyntaxHighlighter : SyntaxHighlighterBase() {
 
     override fun getTokenHighlights(tokenType: IElementType?): Array<TextAttributesKey> = when (tokenType) {
         BtdesignTokenTypes.KEYWORD -> KEYWORD_KEYS
+        BtdesignTokenTypes.CLASS_NAME -> CLASS_NAME_KEYS
+        BtdesignTokenTypes.CLASS_REFERENCE -> CLASS_REFERENCE_KEYS
         BtdesignTokenTypes.STRING -> STRING_KEYS
         BtdesignTokenTypes.NUMBER -> NUMBER_KEYS
         BtdesignTokenTypes.COMMENT -> COMMENT_KEYS

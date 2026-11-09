@@ -1,11 +1,12 @@
-import "classpath:/ordering.btdesign"
-
 Application Shop {
   basePackage=org.example.shop
   Module customer {
     Entity Customer {
       String name
       - @Order lastOrder
+    }
+    Entity Order {
+      String orderNumber
     }
   }
 }
