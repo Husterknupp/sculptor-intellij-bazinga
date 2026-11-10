@@ -20,7 +20,7 @@ Feature: Sculptor cross-file model support in IntelliJ
   (initialize, textDocument/didOpen, textDocument/definition, ...)
   sent directly to the server process.
 
-  The @manual scenario is checked by a human in IntelliJ, with the
+  The @manual scenarios are checked by a human in IntelliJ, with the
   server registered as a user-defined language server:
   https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserDefinedLanguageServer.md
   Its status is visible in LSP4IJ's Language Servers view (the "LSP
@@ -90,6 +90,23 @@ Feature: Sculptor cross-file model support in IntelliJ
     When I open "shop.btdesign" and "ordering.btdesign"
     Then "ordering.btdesign" has exactly one error
     And the error mentions "Missing"
+
+  # The in-editor counterpart of the scenario above: that one checks what the
+  # server reports, this one checks what the developer sees. A reference counts
+  # as unresolved when its entity is declared neither in the open file nor in
+  # a file it imports, so "@Order" must stay unmarked while "@Missing" is
+  # marked. Which exact characters carry the mark is the server's diagnostic
+  # range; the scenario only requires that the unresolved reference is marked.
+  # By default IntelliJ draws errors as a red wavy underline; hover the mark
+  # to see the message.
+  @manual
+  Scenario: An unresolved reference is marked as an error in IntelliJ
+    Given the server is registered in LSP4IJ as a user-defined language server for "*.btdesign"
+    And "shop.btdesign" has the line "- @Missing broken" added to entity "Customer"
+    When I open "shop.btdesign" in IntelliJ
+    Then "@Missing" in "- @Missing broken" is marked as an error, for example with a red wavy underline
+    And hovering the mark shows a message that mentions "Missing"
+    And "@Order" in "- @Order lastOrder" is not marked as an error
 
   @server
   Scenario: Go to definition across files
