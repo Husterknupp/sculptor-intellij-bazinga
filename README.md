@@ -38,3 +38,11 @@ to see `Entity`, `Module` and `Application` highlighted as keywords, and
 `Customer`, `Order` and `@Order` as class names and references. The files in
 `samples/cross-file/` belong to the cross-file milestone
 (`specs/cross-file-navigation.feature`).
+
+## Prebuilt plugin zip
+
+Every pull request push runs `.github/workflows/build-plugin.yml`, which runs
+the tests and uploads the installable zip as a workflow artifact. Open the PR's
+Checks tab > "Build plugin" > Summary and use the download link there; install
+it via Settings > Plugins > gear icon > Install Plugin from Disk. Artifacts are
+kept for 30 days and are replaced by a new one for each new commit.
