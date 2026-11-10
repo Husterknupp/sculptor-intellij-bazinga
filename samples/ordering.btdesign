@@ -1,0 +1,7 @@
+ApplicationPart OrderPart {
+  Module ordering {
+    Entity Order {
+      String orderNumber
+    }
+  }
+}
