@@ -12,11 +12,11 @@ as keywords, identifiers are not. No language server integration yet.
 ## Building
 
 ```
-./gradlew build
+./gradlew buildPlugin
 ```
 
-Runs the lexer unit tests and produces an installable plugin zip under
-`build/distributions/`.
+Produces the installable plugin zip under `build/distributions/`. The lexer
+unit tests run with `./gradlew test` (and as part of `./gradlew build`).
 
 ## Trying it out
 
@@ -24,10 +24,11 @@ Runs the lexer unit tests and produces an installable plugin zip under
 ./gradlew runIde
 ```
 
-`runIde` is provided by the Gradle IntelliJ Plugin itself (see
-`build.gradle.kts`'s `plugins {}` block) — there's no explicit `runIde { }`
-task definition in this project to look for. It launches a sandboxed
-IntelliJ IDEA Community instance with this plugin installed; first run
-downloads the target IDE version and can take a few minutes. Once it's up,
+`runIde` is provided by the IntelliJ Platform Gradle Plugin
+(`org.jetbrains.intellij.platform`, see `build.gradle.kts`'s `plugins {}`
+block) — there's no explicit `runIde { }` task definition in this project to
+look for. It launches a sandboxed IntelliJ IDEA instance (the `platformVersion`
+from `gradle.properties`) with this plugin installed; first run
+downloads that IDE and can take a few minutes. Once it's up,
 open `samples/shop.btdesign` (via File > Open, or drag it into the window)
 to see `Entity`, `Module` and `Application` highlighted as keywords.
