@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Dark schemes; see SculptorDefault.xml for why these are needed. -->
+<list>
+  <option name="SCULPTOR_CLASS_NAME">
+    <value>
+      <option name="FOREGROUND" value="FFC66D"/>
+    </value>
+  </option>
+  <option name="SCULPTOR_CLASS_REFERENCE">
+    <value>
+      <option name="FOREGROUND" value="9876AA"/>
+    </value>
+  </option>
+</list>

@@ -29,7 +29,13 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
 
       - name: Test and build the plugin zip
-        run: ./gradlew build buildPlugin
+        run: |
+          BUILD_TIME="$(date -u '+%Y-%m-%d %H:%M UTC')" ./gradlew build buildPlugin
+        env:
+          # Shown in the IDE under Settings > Plugins > Sculptor DSL.
+          BUILD_PR_NUMBER: ${{ github.event.pull_request.number }}
+          BUILD_PR_TITLE: ${{ github.event.pull_request.title }}
+          BUILD_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Upload plugin zip
         id: upload

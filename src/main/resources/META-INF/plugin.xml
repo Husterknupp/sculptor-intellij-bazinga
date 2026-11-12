@@ -22,5 +22,7 @@
         <lang.syntaxHighlighterFactory
             language="Sculptor"
             implementationClass="org.sculptor.intellij.lang.BtdesignSyntaxHighlighterFactory"/>
+        <additionalTextAttributes scheme="Default" file="colorSchemes/SculptorDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/SculptorDarcula.xml"/>
     </extensions>
 </idea-plugin>
