@@ -8,10 +8,6 @@ on:
   push:
     branches: [main]
 
-concurrency:
-  group: build-plugin-${{ github.ref }}
-  cancel-in-progress: true
-
 permissions:
   contents: read
 
