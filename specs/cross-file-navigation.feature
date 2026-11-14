@@ -1,7 +1,6 @@
 Feature: Sculptor cross-file model support in IntelliJ
 
-  Not implemented yet. The open blocker, `classpath:` imports not being
-  resolved by the server, is tracked in
+  Not implemented yet. Tracked in
   https://github.com/Husterknupp/sculptor-intellij-bazinga/issues/8
 
   A developer opens a Sculptor model that is split across several
