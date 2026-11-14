@@ -7,6 +7,20 @@ Syntax highlighting for `.btdesign` files. What the plugin is supposed to do
 is specified in [`specs/`](specs/), one feature file per milestone; the specs
 are the source of truth. No language server integration yet.
 
+Out of scope for now, each gets its own feature file later: hover
+documentation, find usages, rename, formatting, quick fixes.
+
+## Sculptor syntax
+
+The `.btdesign` samples and specs use Sculptor's DSL. Sculptor's
+[documentation overview](https://sculptor.github.io/documentation/) has no
+standalone syntax reference; the
+[Advanced tutorial](https://sculptor.github.io/documentation/advanced-tutorial)
+shows the DSL features, for example how an `@`-prefixed type references
+another domain object (`- @Order lastOrder`). Some lines in the specs, such as
+`- @Missing broken`, are made up on purpose to trigger an error and are not
+real model content.
+
 ## Building
 
 ```
