@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Light schemes. The platform defines no color for DEFAULT_CLASS_NAME (it falls
+     back to plain text), so without this file class names look unhighlighted. -->
+<list>
+  <option name="SCULPTOR_CLASS_NAME">
+    <value>
+      <option name="FOREGROUND" value="00627A"/>
+    </value>
+  </option>
+  <option name="SCULPTOR_CLASS_REFERENCE">
+    <value>
+      <option name="FOREGROUND" value="871094"/>
+    </value>
+  </option>
+</list>

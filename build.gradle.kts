@@ -6,8 +6,24 @@ plugins {
     id("org.jetbrains.intellij.platform") version "2.19.0"
 }
 
+// Build metadata, set by CI (.github/workflows/build-plugin.yml). Absent in
+// local builds, which then keep the plain version and add no change notes.
+fun buildEnv(name: String): String? = providers.environmentVariable(name).orNull?.takeIf { it.isNotBlank() }
+
+fun htmlEscape(text: String): String = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+val buildCommit: String? = buildEnv("BUILD_COMMIT")?.take(7)
+val buildPrNumber: String? = buildEnv("BUILD_PR_NUMBER")
+val buildPrTitle: String? = buildEnv("BUILD_PR_TITLE")
+val buildTime: String? = buildEnv("BUILD_TIME")
+
 group = providers.gradleProperty("pluginGroup").get()
-version = providers.gradleProperty("pluginVersion").get()
+// Shown as the plugin version in Settings > Plugins, e.g. 0.1.0-pr7-0736ec2.
+version = listOfNotNull(
+    providers.gradleProperty("pluginVersion").get(),
+    buildPrNumber?.let { "pr$it" },
+    buildCommit,
+).joinToString("-")
 
 repositories {
     mavenCentral()
@@ -32,6 +48,18 @@ kotlin {
 
 intellijPlatform {
     pluginConfiguration {
+        // Shown in Settings > Plugins > Sculptor DSL > "What's New" / change notes.
+        if (buildCommit != null) {
+            changeNotes.set(
+                listOfNotNull(
+                    buildPrNumber?.let { number ->
+                        "<b>PR #${htmlEscape(number)}</b>" + (buildPrTitle?.let { ": ${htmlEscape(it)}" } ?: "")
+                    },
+                    "Commit <code>${htmlEscape(buildCommit)}</code>",
+                    buildTime?.let { "Built ${htmlEscape(it)}" },
+                ).joinToString("<br>")
+            )
+        }
         ideaVersion {
             sinceBuild.set(providers.gradleProperty("pluginSinceBuild"))
             untilBuild.set(providers.gradleProperty("pluginUntilBuild"))
