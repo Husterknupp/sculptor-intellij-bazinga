@@ -14,7 +14,9 @@ Feature: Sculptor cross-file model support in IntelliJ
   sent directly to the server process.
 
   The @manual scenarios are checked by a human in IntelliJ, with the
-  server registered as a user-defined language server:
+  server registered as a user-defined language server and CLASSPATH_PREFIX
+  set in its "Environment variables" field (why: README, "Language server
+  setup"):
   https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserDefinedLanguageServer.md
   Its status is visible in LSP4IJ's Language Servers view (the "LSP
   console", see the comment on that scenario):
@@ -22,6 +24,7 @@ Feature: Sculptor cross-file model support in IntelliJ
 
   Background:
     Given the language server built from Sculptor "develop" at commit "4d390ca"
+    And the server is started with the environment variable CLASSPATH_PREFIX set to the workspace folder
     And a workspace containing "shop.btdesign":
       """
       import "classpath:/ordering.btdesign"

@@ -47,6 +47,38 @@ and compare it with `specs/highlighting.feature`. The files in
 `samples/cross-file/` belong to the cross-file milestone
 (`specs/cross-file-navigation.feature`).
 
+## Language server setup (manual, for cross-file features)
+
+Errors, navigation and completion across `.btdesign` files come from the
+language server built from Sculptor `develop` (start script
+`sculptor-eclipse/org.sculptor.dsl.ide/target/languageserver/bin/mydsl-ls`),
+registered in LSP4IJ as a user-defined language server for `*.btdesign`
+([LSP4IJ docs](https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserDefinedLanguageServer.md)).
+See `specs/cross-file-navigation.feature`.
+
+**Set `CLASSPATH_PREFIX`.** Without it, `import "classpath:/..."` is not
+resolved ("Imported resource could not be found") and nothing works across
+files. The server resolves `classpath:` imports through its own class path, which
+holds only the server's jars. The start script prepends `$CLASSPATH_PREFIX`
+to that class path, so pointing it at the folder that holds the models makes
+the imports resolve.
+
+In LSP4IJ's server dialog, add to the `Environment variables` field:
+
+```
+CLASSPATH_PREFIX=<folder that classpath: imports are relative to>
+```
+
+- The folder is the source root the import path starts from: for
+  `classpath:/model/ordering.btdesign` in a Maven project that is usually
+  `<project>/src/main/resources`, for a flat workspace the workspace root.
+- Several roots are separated by `:`. The value is read when
+  the server starts, so after adding a root restart the server (LSP4IJ's
+  Language Servers view).
+- Plain relative imports (`import "ordering.btdesign"`) need nothing.
+- Not verified in IntelliJ yet: whether the `Environment variables` field
+  expands macros such as `$PROJECT_DIR$`. Use an absolute path until checked.
+
 ## Prebuilt plugin zip
 
 Every pull request push runs `.github/workflows/build-plugin.yml`, which runs
