@@ -69,7 +69,11 @@ refers to) in a second job, "language-server". Its summary links the zip;
 unzip it and register `bin/mydsl-ls` (Windows: `bin\mydsl-ls.bat`) in LSP4IJ
 as a user-defined language server for `*.btdesign`
 ([LSP4IJ docs](https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserDefinedLanguageServer.md)).
-The server needs Java 17 or newer; it was checked on 21 and 25.
+The server needs Java 17 or newer; it was checked on 21 and 25. The start
+script takes `java` from `PATH` and ignores `JAVA_HOME`. If `java` is not on
+`PATH`, LSP4IJ only reports "The server was stopped unexpectedly"; set
+`JAVACMD` to the full path of `java` (Windows: `java.exe`) in the server's
+environment variables.
 
 Building it yourself instead:
 
