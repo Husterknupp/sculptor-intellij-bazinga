@@ -59,3 +59,34 @@ Each CI build identifies itself in the IDE: the plugin version reads
 `0.1.0-pr<number>-<commit>`, and Settings > Plugins > Sculptor DSL > "What's
 New" shows the PR title and number, the commit and the build time. Local
 builds keep the plain version.
+
+## Prebuilt language server
+
+Errors, navigation and completion across files come from the Sculptor
+language server, not from this plugin. The same workflow builds it from
+Sculptor `develop` (commit `4d390ca`, the one `specs/cross-file-navigation.feature`
+refers to) in a second job, "language-server". Its summary links the zip;
+unzip it and register `bin/mydsl-ls` (Windows: `bin\mydsl-ls.bat`) in LSP4IJ
+as a user-defined language server for `*.btdesign`
+([LSP4IJ docs](https://github.com/redhat-developer/lsp4ij/blob/main/docs/UserDefinedLanguageServer.md)).
+The server needs Java 17 or newer; it was checked on 21 and 25. The start
+script takes `java` from `PATH` and ignores `JAVA_HOME`. If `java` is not on
+`PATH`, LSP4IJ only reports "The server was stopped unexpectedly"; set
+`JAVACMD` to the full path of `java` (Windows: `java.exe`) in the server's
+environment variables.
+
+Building it yourself instead:
+
+```
+git clone https://github.com/sculptor/sculptor.git && cd sculptor
+git checkout 4d390ca
+mvn -B -pl sculptor-eclipse/org.sculptor.dsl.ide -am package -DskipTests
+```
+
+Build with JDK 17 or 21. On JDK 25 and newer the build fails in Xtext's code
+generator ("Unsupported class file major version 69"). The start script ends
+up in `sculptor-eclipse/org.sculptor.dsl.ide/target/languageserver/bin/`.
+
+The DSL grammar, the reference for what the plugin highlights and what the
+server accepts:
+[`Sculptordsl.xtext`](https://github.com/sculptor/sculptor/blob/4d390ca/sculptor-eclipse/org.sculptor.dsl/src/main/java/org/sculptor/dsl/Sculptordsl.xtext).

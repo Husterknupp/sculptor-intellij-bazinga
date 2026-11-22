@@ -1,8 +1,9 @@
 name: Build plugin
 
 # Builds and tests the plugin on every PR push and uploads the installable
-# zip as a workflow artifact. The artifact link is in the job summary
-# (PR > Checks > "Build plugin" > Summary).
+# zip as a workflow artifact. A second job builds the Sculptor language server
+# that the cross-file features need. Both artifact links are in the job
+# summaries (PR > Checks > "Build plugin" > Summary).
 on:
   pull_request:
   push:
@@ -54,3 +55,57 @@ jobs:
         env:
           ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+
+  language-server:
+    runs-on: ubuntu-latest
+    env:
+      # Sculptor `develop` commit that specs/cross-file-navigation.feature refers to.
+      SCULPTOR_COMMIT: 4d390ca
+    steps:
+      - name: Check out Sculptor
+        run: |
+          git clone --filter=blob:none https://github.com/sculptor/sculptor.git sculptor
+          git -C sculptor checkout "$SCULPTOR_COMMIT"
+
+      # JDK 21, not 25: Xtext 2.38's code generator, which runs during the
+      # build, fails on JDK 25+ class files ("Unsupported class file major
+      # version 69"). The built server runs fine on JDK 21 and 25.
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+          cache-dependency-path: sculptor/**/pom.xml
+
+      - name: Build the language server
+        working-directory: sculptor
+        run: mvn -B -pl sculptor-eclipse/org.sculptor.dsl.ide -am package -DskipTests
+
+      # Zipped here because upload-artifact drops the executable bit of bin/mydsl-ls.
+      - name: Zip the language server
+        run: |
+          mkdir -p dist/sculptor-language-server
+          cp -r sculptor/sculptor-eclipse/org.sculptor.dsl.ide/target/languageserver/. dist/sculptor-language-server/
+          cp sculptor/LICENSE dist/sculptor-language-server/
+          cd dist && zip -qr "sculptor-language-server-${SCULPTOR_COMMIT}.zip" sculptor-language-server
+
+      - name: Upload language server zip
+        id: upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: sculptor-language-server-${{ env.SCULPTOR_COMMIT }}
+          path: dist/*.zip
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Link the artifact in the job summary
+        run: |
+          {
+            echo "### Sculptor language server"
+            echo
+            echo "Sculptor \`${SCULPTOR_COMMIT}\`: [download the language server zip](${ARTIFACT_URL})"
+            echo
+            echo "Unzip, then register \`bin/mydsl-ls\` (Windows: \`bin\\mydsl-ls.bat\`) in LSP4IJ as described in the README. Needs Java 17+."
+          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
