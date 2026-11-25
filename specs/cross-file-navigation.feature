@@ -1,6 +1,7 @@
 Feature: Sculptor cross-file model support in IntelliJ
 
-  Not implemented yet. Tracked in
+  Checked manually in IntelliJ and against the server over plain LSP.
+  The @server scenarios do not run in CI yet (#6). Tracked in
   https://github.com/Husterknupp/sculptor-intellij-bazinga/issues/8
 
   A developer opens a Sculptor model that is split across several
